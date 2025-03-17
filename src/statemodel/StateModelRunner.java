@@ -3,8 +3,8 @@ package statemodel;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import statemodel.exceptions.StateModelExceptionHandler;
-import statemodel.generated.StateModelLexer;
-import statemodel.generated.StateModelParser;
+import statemodel.gen.StateModelLexer;
+import statemodel.gen.StateModelParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
