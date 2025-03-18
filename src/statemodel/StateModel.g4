@@ -1,60 +1,37 @@
 grammar StateModel;
 
-// Parser rules
-model: statesBlock transitionsBlock;
+// Starting rule
+model: states transitions;
 
-statesBlock: STATES LCURLY stateDefinition* RCURLY;
+// States block
+states: STATES LBRACE state+ RBRACE;
+state: INITIAL? STATE_NAME LBRACE labels RBRACE ERROR?;
+labels: (LABEL (COMMA LABEL)*)?;
 
-stateDefinition: ('initial')? ID ('{' labelList? '}')? ('error')? ';';
-
-labelList: ID (',' ID)*;
-
-transitionsBlock: 'transitions' '{' transitionDefinition* '}';
-
-transitionDefinition: 'trans' ('normal' | 'error') ID ':' ID '->' ID ';';
+// Transitions block
+transitions: TRANSITIONS LBRACE transition* RBRACE;
+transition: transScheme | transDefinition;
+transScheme: TRANS (NORMAL | ERROR) ('n1'|'n2'|'e');
+transDefinition: ('n1'|'n2'|'e') COLON STATE_NAME ARROW STATE_NAME;
 
 // Lexer rules
-
 STATES: 'states';
 TRANSITIONS: 'transitions';
+INITIAL: 'initial';
+NORMAL: 'normal';
+ERROR: 'error';
+TRANS: 'trans';
 
-LPAREN: '(';
-RPAREN: ')';
-LCURLY: '{';
-RCURLY: '}';
-EOS: ';';
+LBRACE: '{';
+RBRACE: '}';
+COLON: ':';
+ARROW: '->';
 COMMA: ',';
+SEMI: ';';
 
-EQ: '==';
-NEQ: '!=';
-NEG: '!';
-LT: '<';
-GT: '>';
-LTE: '<=';
-GTE: '>=';
+STATE_NAME: [A-Z][A-Z0-9]*;
+LABEL: [a-z][a-z0-9]*;
+TRANS_NAME: [a-z][a-z0-9]*;
 
-ASSIGN: '=';
-PLUS: '+';
-MINUS: '-';
-MUL: '*';
-DIV: '/';
-
-IF: 'if';
-ELSE: 'else';
-WHILE: 'while';
-VAR: 'var';
-MAIN: 'main';
-RETURN: 'return';
-VOID: 'void';
-
-NULL : 'null';
-TRUE: 'true';
-FALSE: 'false';
-STRING: '"' (~[\r\n"])* '"';
-INT: [0-9]+;
-
-ID: [a-zA-Z][a-zA-Z0-9_]*;
-WS: (' '| '\t' | '\n' | '\r') -> skip;
-
-COMMENT: '/*' .*? '*/' -> skip;
+WS: (' ' | '\t' | '\n' | '\r') -> skip;
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
